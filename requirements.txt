@@ -1,0 +1,5 @@
+paramiko
+pydantic
+pandas
+python-dotenv
+openpyxl
