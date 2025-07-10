@@ -3,3 +3,4 @@ pydantic
 pandas
 python-dotenv
 openpyxl
+ttkbootstrap
