@@ -2,6 +2,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import argparse
 import os
+import glob
 from datetime import datetime
 from dotenv import dotenv_values
 from logger import logger
@@ -198,9 +199,6 @@ class IFBuilderApp:
                 )
                 return
             
-            if not args.debug:
-                self.log_message(f"Environment file found: .env.{args.environment}")
-            
             # Simulate the build process
             name_prefix = args.name or ''
             suffix_with_ymdhms = f'{name_prefix}_{datetime.now().strftime("%y%m%d%H%M%S")}'
@@ -219,9 +217,13 @@ class IFBuilderApp:
             
             # Simulate SFTP upload (skip in debug mode)
             if not args.debug:
-                self.log_message("Preparing to upload files...")
                 env = dotenv_values(f'.env.{args.environment}')
-                self.log_message("Files uploaded successfully")
+                sftp_upload(host=env.get('sftp_host'), port=env.get('sftp_port'),
+                    username=env.get('sftp_username'), password=env.get('sftp_password'),
+                    remote_folder=env.get('sftp_remote_folder'), filenames=glob.glob(f'IF*{suffix_with_ymdhms}*.txt'),
+                    backup=f'backup_{args.environment}',
+                    debug_mode=args.debug)
+                self.log_message(f"Files uploaded to {args.environment}")
             else:
                 self.log_message("Debug mode - skipping file upload")
             
@@ -247,5 +249,6 @@ class IFBuilderApp:
 
 if __name__ == "__main__":
     root = ttk.Window(themename='flatly')
+    root.iconbitmap(os.path.join("rwsif.ico"))
     app = IFBuilderApp(root)
     root.mainloop()

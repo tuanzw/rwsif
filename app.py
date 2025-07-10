@@ -149,6 +149,8 @@ def build_sku(input_file, suffix) -> str|None:
 
 def sftp_upload(host, port, username, password, filenames, remote_folder, backup, debug_mode=False):
     if debug_mode != True:
+        if not os.path.exists(os.path.join(os.getcwd(), backup)):
+            os.mkdir(os.path.join(os.getcwd(), backup))
         with paramiko.SSHClient() as ssh:
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.connect(hostname=host, port=port, username=username, password=password, look_for_keys=False)
