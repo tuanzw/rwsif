@@ -7,15 +7,15 @@ class SSC(BaseModel):
     Merge_Action: Annotated[str, Field(max_length=1, min_length=1)]
     Sku_Id: Annotated[str, Field(max_length=50)]
     Config_Id: Annotated[str, Field(max_length=15)]
-    Main_Config_Id: Annotated[str, Field(max_length=1)] = 'N'
+    Main_Config_Id: Optional[Annotated[str, Field(max_length=1)]] = 'N'
     Client_Id: Annotated[str, Field(max_length=10)]
     Min_Full_Pallet_Perc: Optional[Annotated[int, Field(ge=0, le=999)]] = None
     Max_Full_Pallet_Perc: Optional[Annotated[int, Field(ge=0, le=999)]] = None
     Time_Zone_Name: Optional[Annotated[str, Field(max_length=64)]] = None
-    Collective_Mode: Annotated[str, Field(max_length=1)] = 'N'
+    Collective_Mode: Optional[Annotated[str, Field(max_length=1)]] = 'N'
     Nls_Calendar: Optional[Annotated[str, Field(max_length=30)]] = None
     Collective_Sequence: Optional[Annotated[int, Field(ge=0, le=9999999999)]] = None
-    Disabled: Annotated[str, Field(max_length=1)] = 'N'
+    Disabled: Optional[Annotated[str, Field(max_length=1)]] = 'N'
 
     model_config = {
         "str_strip_whitespace": True,
@@ -59,6 +59,11 @@ class SSC(BaseModel):
         if v is not None and (v < 0 or v > 100):
             raise ValueError(f"{info.field_name} must be between 0 and 100")
         return v
+    
+    @field_validator("Disabled", "Collective_Mode", "Main_Config_Id", mode="before")
+    @classmethod
+    def set_default(cls, v):
+        return 'N' if v is None else v
 
 # Example Usage
 if __name__ == "__main__":

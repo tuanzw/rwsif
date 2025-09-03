@@ -12,7 +12,8 @@ from app import *
 class IFBuilderApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("JDA Interface file Builder")
+        self.app_version = "v25.09.a"
+        self.root.title("JDA Interface Builder")
         self.root.geometry("600x500")
         
         # Apply a modern theme (choose from: 'cosmo', 'flatly', 'darkly', etc.)
@@ -69,7 +70,7 @@ class IFBuilderApp:
         )
         self.options_frame.pack(fill=X, padx=10, pady=5)
         
-        self.build_options = ["ORDER", "PA", "SKU"]
+        self.build_options = ["ORDER", "PA", "SKU", "SKC", "SSC", "RCV"]
         self.build_var = ttk.StringVar()
         
         ttk.Label(
@@ -138,6 +139,17 @@ class IFBuilderApp:
         scrollbar.pack(side=RIGHT, fill=Y)
         self.log_text.config(yscrollcommand=scrollbar.set)
         scrollbar.config(command=self.log_text.yview)
+
+        # Create status bar
+        status_bar = ttk.Frame(self.root)
+        status_bar.pack(side=BOTTOM, fill=X)
+        
+        # Version in right corner
+        ttk.Label(
+            status_bar,
+            text=self.app_version,
+            bootstyle=SECONDARY
+        ).pack(side=RIGHT, padx=10)
     
     def toggle_env_selection(self):
         """Enable/disable environment radio buttons based on debug mode"""
@@ -180,6 +192,9 @@ class IFBuilderApp:
         args.order = selected_build == "order"
         args.pa = selected_build == "pa"
         args.sku = selected_build == "sku"
+        args.skc = selected_build == "skc"
+        args.ssc = selected_build == "ssc"
+        args.rcv = selected_build == "rcv"
             
         try:
             self.log_message(f"Build type: {selected_build.upper()}")
@@ -212,6 +227,12 @@ class IFBuilderApp:
                 message.append(build_pa_line(input_file, suffix_with_ymdhms))
             elif args.sku:
                 message.append(build_sku(input_file, suffix_with_ymdhms))
+            elif args.skc:
+                message.append(build_skc(input_file, suffix_with_ymdhms))
+            elif args.ssc:
+                message.append(build_ssc(input_file, suffix_with_ymdhms))
+            elif args.rcv:
+                message.append(build_rcv(input_file, suffix_with_ymdhms))
 
             self.log_message('\n'.join(msg for msg in message if msg))
             

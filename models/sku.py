@@ -120,7 +120,7 @@ class SKU(BaseModel):
     Manufacture_At_Repack: Optional[Annotated[str, Field(max_length=1)]] = None
     Repack_By_Piece: Optional[Annotated[str, Field(max_length=1)]] = None
     Each_Quantity: Optional[Annotated[float, Field(ge=0, le=999999999.999999)]] = None
-    Collective_Mode: Optional[Annotated[str, Field(max_length=1)]] = None
+    Collective_Mode: Optional[Annotated[str, Field(max_length=1)]] = 'N'
     Packed_Height: Optional[Annotated[float, Field(ge=0, le=9999999.999999)]] = None
     Packed_Width: Optional[Annotated[float, Field(ge=0, le=9999999.999999)]] = None
     Packed_Depth: Optional[Annotated[float, Field(ge=0, le=9999999.999999)]] = None
@@ -290,6 +290,11 @@ class SKU(BaseModel):
             except ValueError:
                 raise ValueError(f"{info.field_name} must be in 'YYYYMMDDHH24MISS' format (e.g., '20230305143000')")
         return v
+    
+    @field_validator("Collective_Mode", mode="before")
+    @classmethod
+    def set_default(cls, v):
+        return 'N' if v is None else v
 
 # Example Usage
 if __name__ == "__main__":

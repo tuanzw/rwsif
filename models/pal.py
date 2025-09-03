@@ -53,7 +53,7 @@ class PAL(BaseModel):
     Ce_Coo: Optional[Annotated[str, Field(max_length=3)]] = None
     Owner_Id: Optional[Annotated[str, Field(max_length=10)]] = None
     Ce_Consignment_Id: Optional[Annotated[str, Field(max_length=18)]] = None
-    Collective_Mode: Optional[Annotated[str, Field(max_length=1, min_length=1)]] = None
+    Collective_Mode: Optional[Annotated[str, Field(max_length=1, min_length=1)]] = 'N'
     Ce_Under_Bond: Optional[Annotated[str, Field(max_length=1, min_length=1)]] = None
     Ce_Link: Optional[Annotated[str, Field(max_length=1, min_length=1)]] = None
     Product_Price: Optional[Annotated[float, Field(le=999999999999)]] = None
@@ -162,6 +162,11 @@ class PAL(BaseModel):
         if v is not None and (v < -9999999999999 or v > 9999999999999):
             raise ValueError(f"{info.field_name} must be between -9999999999999 and 9999999999999")
         return v
+    
+    @field_validator("Collective_Mode", mode="before")
+    @classmethod
+    def set_default(cls, v):
+        return 'N' if v is None else v
 
 # Example Usage
 if __name__ == "__main__":

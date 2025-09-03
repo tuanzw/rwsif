@@ -3,4 +3,6 @@ pydantic
 pandas
 python-dotenv
 openpyxl
+xlsxwriter
 ttkbootstrap
+suds

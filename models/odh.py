@@ -175,7 +175,7 @@ class ODH(BaseModel):
     Order_Reference: Optional[Annotated[str, Field(max_length=35)]] = None
     Start_By_Date: Optional[Annotated[str, Field(max_length=14, min_length=14)]] = None
     Metapack_Carrier_Pre: Optional[Annotated[str, Field(max_length=1, min_length=1)]] = None
-    Collective_Mode: Optional[Annotated[str, Field(max_length=1, min_length=1)]] = None
+    Collective_Mode: Optional[Annotated[str, Field(max_length=1, min_length=1)]] = 'N'
     Contact_Mobile: Optional[Annotated[str, Field(max_length=25)]] = None
     Inv_Contact_Mobile: Optional[Annotated[str, Field(max_length=25)]] = None
     Hub_Contact_Mobile: Optional[Annotated[str, Field(max_length=25)]] = None
@@ -339,6 +339,11 @@ class ODH(BaseModel):
         if v is not None and (v < -999999999999 or v > 999999999999):
             raise ValueError(f"{info.field_name} must be between -999999999999 and 999999999999")
         return v
+    
+    @field_validator("Collective_Mode", mode="before")
+    @classmethod
+    def set_default(cls, v):
+        return 'N' if v is None else v
 
 # Example Usage
 if __name__ == "__main__":

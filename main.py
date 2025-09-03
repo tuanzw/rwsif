@@ -15,6 +15,8 @@ def main():
         parser.add_argument('--order', action="store_true", help="Build ORDER", required = False)
         parser.add_argument('--pa', action="store_true", help="Build PA", required = False)
         parser.add_argument('--sku', action="store_true", help="Build SKU", required = False)
+        parser.add_argument('--skc', action="store_true", help="Build SKC", required = False)
+        parser.add_argument('--ssc', action="store_true", help="Build SSC", required = False)
         parser.add_argument('--debug', action="store_true", help="Run in debug mode", required = False)
         parser.add_argument('--environment', '-e', help='Environment to run in: uat or prod (default: uat)', type=str, choices=['uat', 'prod'], required=False, default='uat')
         parser.add_argument('--name', '-m', help='Output filename suffix', type=str, required=False)
@@ -37,6 +39,12 @@ def main():
                 build_pa_line(input_file, suffix_with_ymdhms)
             elif args.sku:
                 build_sku(input_file, suffix_with_ymdhms)
+            elif args.skc:
+                build_skc(input_file, suffix_with_ymdhms)
+            elif args.ssc:
+                build_ssc(input_file, suffix_with_ymdhms)
+            elif args.rcv:
+                build_rcv(input_file, suffix_with_ymdhms)
 
             sftp_upload(host=env.get('sftp_host'), port=env.get('sftp_port'),
                     username=env.get('sftp_username'), password=env.get('sftp_password'),

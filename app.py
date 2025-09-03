@@ -14,6 +14,7 @@ from models.pal import PAL
 from models.sku import SKU
 from models.skc import SKC
 from models.ssc import SSC
+from models.rcv import RCV
 
 def get_fields_by_type(model_class: Type[BaseModel], target_type: Type) -> dict[str, Type]:
     matching_fields = {}
@@ -115,6 +116,23 @@ def build_ssc(input_file: str, suffix: str) -> str|None:
 
         logger.info(f'IF_SSC_{suffix}.txt written with {len(rows)} rows.')
         return f'IF_SSC_{suffix}.txt written with {len(rows)} rows.'
+    
+
+def build_rcv(input_file: str, suffix: str) -> str|None:
+    # Step 1: Read Excel
+    df = pd.read_excel(input_file, sheet_name='rcv', converters=get_fields_by_type(RCV, str), na_filter=False)
+    df.replace('', None, inplace=True)
+
+    # Step 2: Process only if data exists
+    if not df.empty:
+        rows = [RCV(**row).model_dump() for row in df.to_dict(orient="records")]
+
+        with open(f'IF_RCV_{suffix}.txt', 'w', newline='', encoding='utf-8') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=RCV.model_fields.keys())
+            writer.writerows(rows)
+
+        logger.info(f'IF_RCV_{suffix}.txt written with {len(rows)} rows.')
+        return f'IF_RCV_{suffix}.txt written with {len(rows)} rows.'
 
 
 def build_sku(input_file, suffix) -> str|None:

@@ -77,7 +77,7 @@ class ODL(BaseModel):
     Documentation_Text_1: Optional[Annotated[str, Field(max_length=180)]] = None
     Serial_Number: Optional[Annotated[str, Field(max_length=30)]] = None
     Owner_Id: Optional[Annotated[str, Field(max_length=10)]] = None
-    Collective_Mode: Optional[Annotated[str, Field(max_length=1, min_length=1)]] = None
+    Collective_Mode: Optional[Annotated[str, Field(max_length=1, min_length=1)]] = 'N'
     Ce_Receipt_Type: Optional[Annotated[str, Field(max_length=2)]] = None
     Ce_Coo: Optional[Annotated[str, Field(max_length=3)]] = None
     Kit_Plan_Id: Optional[Annotated[str, Field(max_length=30)]] = None
@@ -193,6 +193,11 @@ class ODL(BaseModel):
         if v is not None and (v < -999999999999 or v > 999999999999):
             raise ValueError(f"{info.field_name} must be between -999999999999 and 999999999999")
         return v
+    
+    @field_validator("Collective_Mode", mode="before")
+    @classmethod
+    def set_default(cls, v):
+        return 'N' if v is None else v
 
 # Example Usage
 if __name__ == "__main__":

@@ -69,7 +69,7 @@ class PAH(BaseModel):
     Yard_Container_Type: Optional[Annotated[str, Field(max_length=18)]] = None
     Yard_Container_Id: Optional[Annotated[str, Field(max_length=20)]] = None
     Ce_Consignment_Id: Optional[Annotated[str, Field(max_length=18)]] = None
-    Collective_Mode: Optional[Annotated[str, Field(max_length=1, min_length=1)]] = None
+    Collective_Mode: Optional[Annotated[str, Field(max_length=1, min_length=1)]] = 'N'
     Contact_Mobile: Optional[Annotated[str, Field(max_length=25)]] = None
     Master_Pre_Advice: Optional[Annotated[str, Field(max_length=1, min_length=1)]] = None
     Ce_Invoice_Number: Optional[Annotated[str, Field(max_length=20)]] = None
@@ -161,6 +161,11 @@ class PAH(BaseModel):
         if v is not None and (v < -999999999999999 or v > 999999999999999):
             raise ValueError(f"{info.field_name} must be between -999999999999999 and 999999999999999")
         return v
+    
+    @field_validator("Collective_Mode", mode="before")
+    @classmethod
+    def set_default(cls, v):
+        return 'N' if v is None else v
 
 # Example Usage
 if __name__ == "__main__":
